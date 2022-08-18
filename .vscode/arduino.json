@@ -1,0 +1,7 @@
+{
+  "board": "arduino:avr:uno",
+  "programmer": "arduino:avrispmkii",
+  "port": "COM6",
+  "sketch": "Aspirador.ino",
+  "output": "./build"
+}
