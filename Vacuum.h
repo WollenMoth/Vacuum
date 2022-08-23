@@ -3,13 +3,12 @@
 #define Vacuum_h
 
 class Vacuum {
-  private:
-    void _startEngine(bool side, bool direction);
   public:
     Vacuum();
-    void move(bool direction);
+    void move(int direction);
     void turn(bool side);
     void stop();
+    void turnSensor();
     void cleanTrash();
     bool senseTrash();
     int senseObstacles();

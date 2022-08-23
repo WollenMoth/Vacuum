@@ -17,6 +17,9 @@
             "includePath": [
                 "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\cores\\arduino",
                 "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\variants\\standard",
+                "C:\\Users\\andre\\OneDrive - Benemérita Universidad Autónoma de Puebla\\Documents\\Arduino\\libraries\\Adafruit_Motor_Shield_library",
+                "C:\\Users\\andre\\OneDrive - Benemérita Universidad Autónoma de Puebla\\Documents\\Arduino\\libraries\\AsyncTimer\\src",
+                "C:\\Program Files (x86)\\Arduino\\libraries\\Servo\\src",
                 "c:\\program files (x86)\\arduino\\hardware\\tools\\avr\\lib\\gcc\\avr\\7.3.0\\include",
                 "c:\\program files (x86)\\arduino\\hardware\\tools\\avr\\lib\\gcc\\avr\\7.3.0\\include-fixed",
                 "c:\\program files (x86)\\arduino\\hardware\\tools\\avr\\avr\\include"
