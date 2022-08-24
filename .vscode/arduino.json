@@ -1,7 +1,0 @@
-{
-  "board": "arduino:avr:uno",
-  "programmer": "arduino:avrispmkii",
-  "port": "COM6",
-  "sketch": "Vacuum.ino",
-  "output": "./build"
-}
