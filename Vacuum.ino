@@ -1,31 +1,28 @@
 #include "Vacuum.h"
 #include <AFMotor.h>
-#include <AsyncTimer.h>
-
-#define LEFT false
-#define RIGHT true
 
 Vacuum vacuum;
+bool isDirty;
+int trips, lastCleanTrip;
 
 void setup() {
-  vacuum.turnSensor();
 }
 
 void loop() {
-  vacuum.move(FORWARD);
-  delay(1000);
-  vacuum.stop();
-  delay(1000);
-  vacuum.turn(LEFT);
-  delay(1000);
-  vacuum.stop();
-  delay(1000);
-  vacuum.move(BACKWARD);
-  delay(1000);
-  vacuum.stop();
-  delay(1000);
-  vacuum.turn(RIGHT);
-  delay(1000);
-  vacuum.stop();
-  delay(1000);
+  lastCleanTrip = 0;
+
+  do {
+    isDirty = vacuum.senseTrash();
+
+    if(isDirty) {
+      vacuum.cleanTrash();
+      lastCleanTrip = trips + 1;
+    } else {
+      vacuum.move();
+    }
+
+    trips = vacuum.getTrips();
+  } while(trips - lastCleanTrip < 2);
+
+  vacuum.reset();
 }
