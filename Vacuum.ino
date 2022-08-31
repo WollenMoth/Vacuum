@@ -5,24 +5,31 @@ Vacuum vacuum;
 bool isDirty;
 int trips, lastCleanTrip;
 
-void setup() {
+void setup()
+{
+  Serial.begin(115200);
 }
 
-void loop() {
+void loop()
+{
   lastCleanTrip = 0;
 
-  do {
+  do
+  {
     isDirty = vacuum.senseTrash();
 
-    if(isDirty) {
+    if (isDirty)
+    {
       vacuum.cleanTrash();
       lastCleanTrip = trips + 1;
-    } else {
+    }
+    else
+    {
       vacuum.move();
     }
 
     trips = vacuum.getTrips();
-  } while(trips - lastCleanTrip < 2);
+  } while (trips - lastCleanTrip < 2);
 
   vacuum.reset();
 }
