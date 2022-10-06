@@ -14,6 +14,7 @@ private:
   void _startEngine(bool);
   void _stopEngine(bool);
   void _changeDirection();
+  void _readSpeed();
 
 public:
   Vacuum();
