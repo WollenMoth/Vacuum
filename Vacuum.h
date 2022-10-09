@@ -3,11 +3,13 @@
 #define Vacuum_h
 
 #include <AFMotor.h>
+#include <Fuzzy.h>
 
 class Vacuum
 {
 private:
   AF_DCMotor _left_motor, _right_motor;
+  Fuzzy *_fuzzy;
   int _direction, _trips;
   unsigned long _start_time, _run_time;
   unsigned long _last_clean;

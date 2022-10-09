@@ -10,19 +10,14 @@
 #include <FuzzyRuleConsequent.h>
 #include <FuzzySet.h>
 
-Fuzzy* fuzzy = newFuzzy();
-
 #define LEFT false
 #define RIGHT true
 
 #define PIN_TRASH_SENSOR 2
 
-#define MOTOR_SPEED 100
-
 #define IDLE_DELAY 10000
 #define CLEAN_TIME 2000
 #define MAX_MOVE_TIME 2000
-
 
 Vacuum::Vacuum() : _left_motor(1), _right_motor(2)
 {
@@ -35,82 +30,90 @@ Vacuum::Vacuum() : _left_motor(1), _right_motor(2)
   _run_time = 0;
   _trips = 0;
 
-  FuzzySet* baja = newFuzzySet(0, 80, 240, 320); 
+  _fuzzy = new Fuzzy();
+
+  FuzzyInput *pot = new FuzzyInput(1);
+
+  FuzzySet *baja = new FuzzySet(0, 80, 240, 320);
   pot->addFuzzySet(baja);
 
-  FuzzySet* mediabaja = newFuzzySet(240, 320, 320, 400);
+  FuzzySet *mediabaja = new FuzzySet(240, 320, 320, 400);
   pot->addFuzzySet(mediabaja);
 
-  FuzzySet* media = newFuzzySet(320, 400, 560, 640);
+  FuzzySet *media = new FuzzySet(320, 400, 560, 640);
   pot->addFuzzySet(media);
 
-  FuzzySet* mediaalta = newFuzzySet(560, 640, 640, 720);
+  FuzzySet *mediaalta = new FuzzySet(560, 640, 640, 720);
   pot->addFuzzySet(mediaalta);
 
-  FuzzySet* alta = newFuzzySet(640, 720, 960, 1023);
+  FuzzySet *alta = new FuzzySet(640, 720, 960, 1023);
   pot->addFuzzySet(alta);
 
-  fuzzy->addFuzzyInput(pot);
+  _fuzzy->addFuzzyInput(pot);
 
-  FuzzyOutput* velocidad = newFuzzyOutput(1);
+  FuzzyOutput *velocidad = new FuzzyOutput(1);
 
-  FuzzySet* lento = newFuzzySet(0, 20, 60, 80);
+  FuzzySet *lento = new FuzzySet(0, 20, 60, 80);
   velocidad->addFuzzySet(lento);
 
-  FuzzySet* mediolento = newFuzzySet(60, 80, 80, 100);
+  FuzzySet *mediolento = new FuzzySet(60, 80, 80, 100);
   velocidad->addFuzzySet(mediolento);
 
-  FuzzySet* medio = newFuzzySet(80, 100, 140, 160);
+  FuzzySet *medio = new FuzzySet(80, 100, 140, 160);
   velocidad->addFuzzySet(medio);
 
-  FuzzySet* medioveloz = newFuzzySet(140, 160, 160, 180);
+  FuzzySet *medioveloz = new FuzzySet(140, 160, 160, 180);
   velocidad->addFuzzySet(medioveloz);
 
-  FuzzySet* veloz = newFuzzySet(160, 180, 240, 255);
+  FuzzySet *veloz = new FuzzySet(160, 180, 240, 255);
   velocidad->addFuzzySet(veloz);
 
-  fuzzy->addFuzzyOutput(velocidad);
-  //IF pot = baja THEN velocidad = lento
-  FuzzyRuleAntecedent* ifPotBaja =newFuzzyRuleAntecedent();
+  _fuzzy->addFuzzyOutput(velocidad);
+
+  // IF pot = baja THEN velocidad = lento
+  FuzzyRuleAntecedent *ifPotBaja = new FuzzyRuleAntecedent();
   ifPotBaja->joinSingle(baja);
-  FuzzyRuleConsequent* thenVelocidadLento =newFuzzyRuleConsequent();
+  FuzzyRuleConsequent *thenVelocidadLento = new FuzzyRuleConsequent();
   thenVelocidadLento->addOutput(lento);
-  FuzzyRule* Regla01 = newFuzzyRule(1, ifPotBaja, thenVelocidadLento);
+  FuzzyRule *Regla01 = new FuzzyRule(1, ifPotBaja, thenVelocidadLento);
 
-  fuzzy->addFuzzyRule(Regla01);
+  _fuzzy->addFuzzyRule(Regla01);
 
-  //IF pot = mediabaja THEN velocidad = mediolento
-  FuzzyRuleAntecedent* ifPotMediaBaja = newFuzzyRuleAntecedent();
+  // IF pot = mediabaja THEN velocidad = mediolento
+  FuzzyRuleAntecedent *ifPotMediaBaja = new FuzzyRuleAntecedent();
   ifPotMediaBaja->joinSingle(mediabaja);
-  FuzzyRuleConsequent* thenVelocidadMedioLento = newFuzzyRuleConsequent();
+  FuzzyRuleConsequent *thenVelocidadMedioLento = new FuzzyRuleConsequent();
   thenVelocidadMedioLento->addOutput(mediolento);
-  FuzzyRule* Regla02 = newFuzzyRule(1, ifPotMediaBaja, thenVelocidadMedioLento);
+  FuzzyRule *Regla02 = new FuzzyRule(1, ifPotMediaBaja, thenVelocidadMedioLento);
 
-  fuzzy->addFuzzyRule(Regla02);
-  //IF pot = media THEN velocidad = medio
-  FuzzyRuleAntecedent* ifPotMedia = newFuzzyRuleAntecedent();
+  _fuzzy->addFuzzyRule(Regla02);
+
+  // IF pot = media THEN velocidad = medio
+  FuzzyRuleAntecedent *ifPotMedia = new FuzzyRuleAntecedent();
   ifPotMedia->joinSingle(media);
-  FuzzyRuleConsequent* thenVelocidadMedio = newFuzzyRuleConsequent();
+  FuzzyRuleConsequent *thenVelocidadMedio = new FuzzyRuleConsequent();
   thenVelocidadMedio->addOutput(medio);
-  FuzzyRule* Regla03 = newFuzzyRule(1, ifPotMedia, thenVelocidadMedio);
+  FuzzyRule *Regla03 = new FuzzyRule(1, ifPotMedia, thenVelocidadMedio);
 
-  fuzzy->addFuzzyRule(Regla03);
-  //IF pot = mediaalta THEN velocidad = medioveloz
-  FuzzyRuleAntecedent* ifPotMediaAlta = newFuzzyRuleAntecedent();
+  _fuzzy->addFuzzyRule(Regla03);
+
+  // IF pot = mediaalta THEN velocidad = medioveloz
+  FuzzyRuleAntecedent *ifPotMediaAlta = new FuzzyRuleAntecedent();
   ifPotMediaAlta->joinSingle(mediaalta);
-  FuzzyRuleConsequent* thenVelocidadMedioVeloz = newFuzzyRuleConsequent();
+  FuzzyRuleConsequent *thenVelocidadMedioVeloz = new FuzzyRuleConsequent();
   thenVelocidadMedioVeloz->addOutput(medioveloz);
-  FuzzyRule* Regla04 = newFuzzyRule(1, ifPotMediaAlta, thenVelocidadMedioVeloz);
+  FuzzyRule *Regla04 = new FuzzyRule(1, ifPotMediaAlta, thenVelocidadMedioVeloz);
 
-  fuzzy->addFuzzyRule(Regla04);
-  //IF pot = alta THEN velocidad = veloz
-  FuzzyRuleAntecedent* ifPotAlta = newFuzzyRuleAntecedent();
+  _fuzzy->addFuzzyRule(Regla04);
+
+  // IF pot = alta THEN velocidad = veloz
+  FuzzyRuleAntecedent *ifPotAlta = new FuzzyRuleAntecedent();
   ifPotAlta->joinSingle(alta);
-  FuzzyRuleConsequent* thenVelocidadVeloz = newFuzzyRuleConsequent();
+  FuzzyRuleConsequent *thenVelocidadVeloz = new FuzzyRuleConsequent();
   thenVelocidadVeloz->addOutput(veloz);
-  FuzzyRule* Regla05 = newFuzzyRule(1, ifPotAlta, thenVelocidadVeloz);
+  FuzzyRule *Regla05 = new FuzzyRule(1, ifPotAlta, thenVelocidadVeloz);
 
-  fuzzy->addFuzzyRule(Regla05);
+  _fuzzy->addFuzzyRule(Regla05);
 }
 
 void Vacuum::_startEngine(bool side)
@@ -132,6 +135,8 @@ void Vacuum::_changeDirection()
 void Vacuum::move()
 {
   unsigned long move_time = millis() - _start_time + _run_time;
+
+  _readSpeed();
 
   _startEngine(LEFT);
   _startEngine(RIGHT);
@@ -188,27 +193,29 @@ void Vacuum::reset()
   delay(IDLE_DELAY);
 }
 
-void Vacuum::_readSpeed(){
-  //Lectura del potenciometro
+void Vacuum::_readSpeed()
+{
+  int readPot, output;
+
+  // Lectura del potenciómetro
   readPot = analogRead(A0);
 
-  //Se indica que la variable readPot representa la señal de entrada
-  fuzzy->setInput(1, readPot);
+  // Se indica que la variable readPot representa la señal de entrada
+  _fuzzy->setInput(1, readPot);
 
-  //Se realiza la fuzzificacion
-  fuzzy->fuzzify();
+  // Se realiza la fuzzificación
+  _fuzzy->fuzzify();
 
-  //Se realiza la defuzzificacion asignando su valor final a la variable 
-  //output
-  output = fuzzy->defuzzify(1);
+  // Se realiza la defuzzificación asignando su valor final a la variable output
+  output = _fuzzy->defuzzify(1);
 
-  //Se envia la señal de salida al motor
+  // Se envía la señal de salida al motor
   _left_motor.setSpeed(output);
   _right_motor.setSpeed(output);
 
-  Serial.print(“Potenciometro: “); //Se imprime la lectura del POT, asi 
-  Serial.print(readPot); //como la velocidad en RPM medida por el 
-  Serial.print(“ “); //encoder.
-  Serial.print(“Salida: “);
-  Serial.print(output);
+  Serial.print("Potenciometro: "); // Se imprime la lectura del POT, así
+  Serial.print(readPot);           // como la velocidad enviada al motor.
+  Serial.print(" Salida: ");
+  Serial.println(output);
+  delay(10);
 }
